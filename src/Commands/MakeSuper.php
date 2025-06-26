@@ -98,7 +98,12 @@ class MakeSuper extends Command
             foreach ($stubs as $stub) {
                 $destination = resource_path("views/{$viewDir}/{$stub}.blade.php");
                 if (!file_exists($destination)) {
-                    $content = file_get_contents(__DIR__ . '/../../stubs/view_' . $stub . '.stub');
+                    $publishedStub = base_path("stubs/vendor/super-artisan/view_{$stub}.stub");
+                    $defaultStub = __DIR__ . "/../../stubs/view_{$stub}.stub";
+
+                    $stubPath = file_exists($publishedStub) ? $publishedStub : $defaultStub;
+
+                    $content = file_get_contents($stubPath);
                     $content = str_replace('{{ name }}', $name, $content);
                     $content = str_replace('{{ lower_name }}', $lowerName, $content);
                     $dir = dirname($destination);
