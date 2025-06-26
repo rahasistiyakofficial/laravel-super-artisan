@@ -250,7 +250,7 @@ Tests verify file generation, path handling, repository bindings, and error case
 
 ## Contributing
 
-Contributions are welcome! Please submit pull requests or issues to the [GitHub repository](https://github.com/rahasistiyak/super-artisan).
+Contributions are welcome! Please submit pull requests or issues to the [GitHub repository](https://github.com/rahasistiyakofficial/super-artisan).
 
 ## License
 
