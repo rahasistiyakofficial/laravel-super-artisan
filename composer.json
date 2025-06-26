@@ -1,6 +1,7 @@
 {
   "name": "rahasistiyak/laravel-super-artisan",
   "description": "Enhanced Artisan tools for Laravel to streamline file generation and workflows",
+  "version": "1.0.0",
   "type": "library",
   "keywords": ["laravel", "artisan", "generator", "workflow", "livewire", "vue", "react", "repository"],
   "homepage": "https://github.com/rahasistiyakofficial/laravel-super-artisan",
