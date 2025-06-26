@@ -42,9 +42,9 @@ class MakeSuper extends Command
             return 1;
         }
         $frontEnd = key($frontEndOptions) ?? 'blade';
-
+        $this->info("Hello Super Artisan!");
         // 1. Generate Model
-        $modelName = $modelPath ? "Models/{$modelPath}/{$name}" : "Models/{$name}";
+        $modelName = $modelPath ? "{$modelPath}/{$name}" : "{$name}";
         $this->call('make:model', [
             'name' => $modelName,
             '-m' => true,
