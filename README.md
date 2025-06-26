@@ -21,7 +21,7 @@
 Install the package via Composer:
 
 ```bash
-composer require rahasistiyak/super-artisan
+composer require rahasistiyak/laravel-super-artisan
 ```
 
 Publish the configuration and stub files:
