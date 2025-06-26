@@ -1,0 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
+    <h1>Show {{ name }}</h1>
+    <!-- Show content -->
+@endsection

@@ -1,0 +1,21 @@
+<template>
+    <div>
+        <h1>{{ name }} Component</h1>
+        <!-- Vue content -->
+    </div>
+</template>
+
+<script>
+export default {
+    name: '{{ name }}',
+    data() {
+        return {
+            // Data properties
+        };
+    }
+};
+</script>
+
+<style scoped>
+/* Styles */
+</style>

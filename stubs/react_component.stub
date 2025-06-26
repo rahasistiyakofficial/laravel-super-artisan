@@ -1,0 +1,12 @@
+import React from 'react';
+
+const {{ name }} = () => {
+    return (
+        <div>
+            <h1>{{ name }} Component</h1>
+            {/* React content */}
+        </div>
+    );
+};
+
+export default {{ name }};

@@ -1,0 +1,6 @@
+@extends('layouts.app')
+
+@section('content')
+    <h1>{{ name }} List</h1>
+    <!-- List content -->
+@endsection
