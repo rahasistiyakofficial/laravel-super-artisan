@@ -11,7 +11,7 @@ class RunWorkflow extends Command
         {workflow : Workflow name as defined in config/super-artisan.php}
         {--name=         : Optional {name} token value to substitute in commands}
         {--dry-run       : Show commands without running them}
-        {--stop-on-failure: Stop execution if any command returns non-zero exit code}
+        {--stop-on-failure : Stop execution if any command returns non-zero exit code}
         {--list          : List all available workflows and exit}';
 
     protected $description = 'Execute a predefined sequence of Artisan commands (workflow)';
