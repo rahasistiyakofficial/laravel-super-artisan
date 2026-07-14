@@ -374,13 +374,12 @@ class MakeSuper extends Command
             $opts        = [];
 
             foreach ($parts as $part) {
-                if (str_starts_with($part, '--')) {
-                    $opt = ltrim($part, '-');
-                    if (str_contains($opt, '=')) {
-                        [$k, $v] = explode('=', $opt, 2);
-                        $opts["--{$k}"] = $v;
+                if (str_starts_with($part, '-')) {
+                    if (str_contains($part, '=')) {
+                        [$k, $v] = explode('=', $part, 2);
+                        $opts[$k] = $v;
                     } else {
-                        $opts["--{$opt}"] = true;
+                        $opts[$part] = true;
                     }
                 } else {
                     $args[] = $part;

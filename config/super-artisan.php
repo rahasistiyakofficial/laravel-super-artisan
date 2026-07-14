@@ -18,15 +18,13 @@ return [
         'crud' => [
             'description' => 'Full CRUD: Model + Migration + Factory + Resource Controller + Blade Views.',
             'commands'    => [
-                'make:model {name} -m -f',
-                'make:controller Http/Controllers/{name}Controller --resource --model={name}',
+                'make:super {name}',
             ],
         ],
 
         'api-resource' => [
             'description' => 'API CRUD: Model + Migration + Factory + API Controller.',
             'commands'    => [
-                'make:model {name} -m -f',
                 'make:super {name} --api',
             ],
         ],
@@ -34,7 +32,6 @@ return [
         'repository-crud' => [
             'description' => 'Full CRUD with Repository pattern: Model + Migration + Repository (class + interface + provider) + Controller.',
             'commands'    => [
-                'make:model {name} -m -f',
                 'make:super {name} --pattern=repository',
             ],
         ],
@@ -42,15 +39,13 @@ return [
         'livewire' => [
             'description' => 'Model + Migration + Livewire component.',
             'commands'    => [
-                'make:model {name} -m',
-                'make:livewire {lower_name}',
+                'make:super {name} --livewire',
             ],
         ],
 
         'filament-resource' => [
             'description' => 'Model + Migration + Filament resource.',
             'commands'    => [
-                'make:model {name} -m -f',
                 'make:super {name} --filament',
             ],
         ],
@@ -58,8 +53,6 @@ return [
         'full-stack' => [
             'description' => 'Complete stack: Model + Migration + Repository + Policy + FormRequest + Controller.',
             'commands'    => [
-                'make:model {name} -m -f',
-                'make:repository {name}Repository --model={name}',
                 'make:super-policy {name}Policy --model={name}',
                 'make:super-request Store{name}Request',
                 'make:super-request Update{name}Request',
