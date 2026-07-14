@@ -1,262 +1,464 @@
-# Super Artisan for Laravel
+# Super Artisan for Laravel — v2.0
 
-**Super Artisan** is a powerful Laravel package that enhances the Artisan console to streamline repetitive development tasks. The `make:super` command generates multiple files (e.g., models, controllers, migrations, views, or front-end components) in a single command, with support for custom paths and design patterns like MVC, repository, or service. The `run:workflow` command executes predefined sequences of Artisan commands for tasks like deployment.
+<p align="center">
+  <strong>The ultimate Laravel scaffolding & workflow package.</strong><br>
+  Generate complete resource stacks, run Artisan workflows, and supercharge your development speed.
+</p>
 
-## Features
+<p align="center">
+  <a href="https://packagist.org/packages/rahasistiyak/laravel-super-artisan"><img src="https://img.shields.io/packagist/v/rahasistiyak/laravel-super-artisan.svg" alt="Latest Version"></a>
+  <a href="https://packagist.org/packages/rahasistiyak/laravel-super-artisan"><img src="https://img.shields.io/packagist/php-v/rahasistiyak/laravel-super-artisan.svg" alt="PHP Version"></a>
+  <a href="https://packagist.org/packages/rahasistiyak/laravel-super-artisan"><img src="https://img.shields.io/packagist/l/rahasistiyak/laravel-super-artisan.svg" alt="License"></a>
+</p>
 
-- **Generate Multiple Files**: Create models, migrations, controllers, and views (Blade, Livewire, Vue, or React) with one command.
-- **Optional Custom Paths**: Place files in default locations or specify custom subfolders for models, controllers, views, and migrations.
-- **Design Patterns**: Support for MVC (default), repository (with interfaces and bindings), and service patterns.
-- **Front-end Flexibility**: Generate Blade views (default), Livewire components, or Vue/React components.
-- **Workflows**: Execute predefined sequences of Artisan commands.
-- **Configurable**: Define custom blueprints and workflows in a configuration file.
+---
+
+## What's New in v2.0
+
+| Feature | v1 | v2 |
+|---|---|---|
+| `run:workflow` command | ❌ Missing | ✅ Fully implemented |
+| Repository pattern (full triad) | ⚠️ Partial | ✅ Class + Interface + Provider |
+| Bulk generation | ❌ | ✅ `make:super Post,Comment,Tag` |
+| API scaffolding | ❌ | ✅ `--api` |
+| Filament resource | ❌ | ✅ `--filament` |
+| Domain-driven layout | ❌ | ✅ `--domain=Blog` |
+| Blueprint system | ⚠️ Config only | ✅ Fully executable |
+| `--force` / `--dry-run` | ❌ | ✅ Both supported |
+| `make:super-request` | ❌ | ✅ New command |
+| `make:super-policy` | ❌ | ✅ New command |
+| `make:super-action` | ❌ | ✅ New command |
+| `super:list` | ❌ | ✅ New DX helper |
+| PHP & Laravel support | PHP 8.0+, L11-12 | PHP 8.2+, L11-12-13 |
+
+---
 
 ## Requirements
 
-- PHP >= 8.0
-- Laravel 11.x or 12.x
+- **PHP** >= 8.2
+- **Laravel** 11.x, 12.x, or 13.x
+
+---
 
 ## Installation
-
-Install the package via Composer:
 
 ```bash
 composer require rahasistiyak/laravel-super-artisan
 ```
 
-Publish the configuration and stub files:
+Publish the config and stubs:
 
 ```bash
+# Publish config (optional but recommended)
 php artisan vendor:publish --tag=super-artisan-config
+
+# Publish stubs (to customize templates)
 php artisan vendor:publish --tag=super-artisan-stubs
 ```
 
 This creates:
-- `config/super-artisan.php`: Configuration for blueprints and workflows.
-- `stubs/vendor/super-artisan/`: Customizable stub files.
+- `config/super-artisan.php` — Define your blueprints and workflows.
+- `stubs/vendor/super-artisan/` — Customize every generated file template.
 
-## Usage
+---
 
-### `make:super` Command
+## Available Commands
 
-The `make:super` command generates files for a resource (e.g., `Post`) with customizable paths and patterns. By default, it uses standard Laravel directories, but you can optionally specify custom paths.
+| Command | Description |
+|---|---|
+| `make:super {name}` | Generate a complete resource stack |
+| `make:repository {name}` | Generate a repository (class + interface + provider) |
+| `make:service {name}` | Generate a service class |
+| `make:super-request {name}` | Generate a FormRequest |
+| `make:super-policy {name}` | Generate a Gate policy |
+| `make:super-action {name}` | Generate a single-responsibility Action |
+| `run:workflow {name}` | Execute a predefined Artisan command workflow |
+| `super:list` | List all available workflows and blueprints |
 
-**Syntax**:
+---
+
+## `make:super` — Resource Generator
+
+### Signature
 
 ```bash
-php artisan make:super {name} [--livewire|--vue|--react] [--path={path}] [--controller_path={path}] [--model_path={path}] [--view_path={path}] [--migration_path={path}] [--pattern=repository|service]
+php artisan make:super {name} [options]
 ```
 
-**Options**:
+### Options
 
-- `--livewire`: Generate a Livewire component (in `app/Livewire` and `resources/views/livewire`).
-- `--vue`: Generate a Vue component (in `resources/js`).
-- `--react`: Generate a React component (in `resources/js`).
-- `--path={path}`: (Optional) Base path for controllers and views/components (e.g., `Admin` places controllers in `app/Http/Controllers/Admin` and views in `resources/views/Admin` or `resources/js/Admin`).
-- `--controller_path={path}`: (Optional) Subfolder within `app/Http/Controllers` (e.g., `Admin` places controllers in `app/Http/Controllers/Admin`).
-- `--model_path={path}`: (Optional) Subfolder within `app/Models` (e.g., `Custom` creates `app/Models/Custom/{name}.php`).
-- `--view_path={path}`: (Optional) Subfolder within `resources/views` (for Blade/Livewire) or `resources/js` (for Vue/React).
-- `--migration_path={path}`: (Optional) Subfolder within `database/migrations`.
-- `--pattern=repository|service`: (Optional) Generate files for repository (with interface and controller injection) or service pattern.
+| Option | Description |
+|---|---|
+| `{name}` | Resource name(s). Comma-separate for bulk: `Post,Comment,Tag` |
+| `--livewire` | Generate a Livewire component |
+| `--vue` | Generate a Vue 3 component |
+| `--react` | Generate a React component |
+| `--api` | Generate an API resource controller (JSON responses) |
+| `--filament` | Generate a Filament v3 resource |
+| `--pattern=repository` | Apply the Repository pattern (class + interface + binding) |
+| `--pattern=service` | Apply the Service pattern |
+| `--blueprint={key}` | Run a named blueprint from config |
+| `--domain={Name}` | Place files under a domain namespace |
+| `--path={path}` | Base path for controllers and views |
+| `--controller_path={path}` | Controller subfolder |
+| `--model_path={path}` | Model subfolder |
+| `--view_path={path}` | View/component subfolder |
+| `--migration_path={path}` | Migration subfolder |
+| `--force` | Overwrite existing files |
+| `--dry-run` | Preview what would be generated without writing |
+| `--interactive` | Prompt for options interactively |
 
-**Note**: Only one of `--livewire`, `--vue`, or `--react` can be used. Specifying multiple will result in an error.
+### Examples
 
-**Examples**:
-
-1. **Default MVC with Blade Views**:
-
-   ```bash
-   php artisan make:super Post
-   ```
-
-   Generates:
-   - Model: `app/Models/Post.php`
-   - Migration: `database/migrations/*_create_posts_table.php`
-   - Controller: `app/Http/Controllers/PostController.php`
-   - Views: `resources/views/post/index.blade.php`, `create.blade.php`, `edit.blade.php`, `show.blade.php`
-
-2. **Livewire with Default Paths**:
-
-   ```bash
-   php artisan make:super Post --livewire
-   ```
-
-   Generates:
-   - Model: `app/Models/Post.php`
-   - Migration: `database/migrations/*_create_posts_table.php`
-   - Controller: `app/Http/Controllers/PostController.php`
-   - Livewire: `app/Livewire/Post.php`
-   - View: `resources/views/livewire/post.blade.php`
-
-3. **Livewire with Custom View Path**:
-
-   ```bash
-   php artisan make:super Post --livewire --view_path=admin/posts
-   ```
-
-   Generates:
-   - Model: `app/Models/Post.php`
-   - Migration: `database/migrations/*_create_posts_table.php`
-   - Controller: `app/Http/Controllers/PostController.php`
-   - Livewire: `app/Livewire/admin/posts/Post.php`
-   - View: `resources/views/livewire/admin/posts/post.blade.php`
-
-4. **Vue with Default Path**:
-
-   ```bash
-   php artisan make:super Post --vue
-   ```
-
-   Generates:
-   - Model: `app/Models/Post.php`
-   - Migration: `database/migrations/*_create_posts_table.php`
-   - Controller: `app/Http/Controllers/PostController.php`
-   - Vue: `resources/js/components/Post.vue`
-
-5. **Vue with Custom Path**:
-
-   ```bash
-   php artisan make:super Post --vue --path=Admin
-   ```
-
-   Generates:
-   - Model: `app/Models/Post.php`
-   - Migration: `database/migrations/*_create_posts_table.php`
-   - Controller: `app/Http/Controllers/Admin/PostController.php`
-   - Vue: `resources/js/Admin/Post.vue`
-
-6. **Repository Pattern with Custom Controller Path**:
-
-   ```bash
-   php artisan make:super Post --pattern=repository --controller_path=Admin
-   ```
-
-   Generates:
-   - Model: `app/Models/Post.php`
-   - Migration: `database/migrations/*_create_posts_table.php`
-   - Controller: `app/Http/Controllers/Admin/PostController.php` (with repository injection)
-   - Repository: `app/Repositories/PostRepository.php`
-   - Interface: `app/Repositories/PostRepositoryInterface.php`
-   - Binding: `app/Providers/RepositoryServiceProvider.php`
-   - Views: `resources/views/post/index.blade.php`, etc.
-
-7. **Custom Model Path**:
-
-   ```bash
-   php artisan make:super Post --model_path=Custom
-   ```
-
-   Generates:
-   - Model: `app/Models/Custom/Post.php`
-   - Migration: `database/migrations/*_create_posts_table.php`
-   - Controller: `app/Http/Controllers/PostController.php`
-   - Views: `resources/views/post/*.blade.php`
-
-8. **Error on Multiple Front-end Options**:
-
-   ```bash
-   php artisan make:super Post --livewire --vue
-   ```
-
-   Output: `Only one of --livewire, --vue, or --react can be used.`
-
-### `run:workflow` Command
-
-Execute a sequence of Artisan commands defined in `config/super-artisan.php`.
-
-**Syntax**:
-
+#### Basic CRUD (Blade Views)
 ```bash
-php artisan run:workflow {workflow}
+php artisan make:super Post
+```
+Generates: Model, Migration, Factory, Controller, 4 Blade views
+
+#### Bulk Generation
+```bash
+php artisan make:super Post,Comment,Tag
+```
+Generates the full stack for all three resources at once.
+
+#### API Resource
+```bash
+php artisan make:super Post --api
+```
+Generates: Model, Migration, Factory, API Controller (JSON responses, no views)
+
+#### Repository Pattern
+```bash
+php artisan make:super Post --pattern=repository
+```
+Generates: Model + Migration + Repository class + Interface + `RepositoryServiceProvider` binding + Controller with DI
+
+#### Filament Resource
+```bash
+php artisan make:super Post --filament
+```
+Generates: Model + Migration + Filament v3 Resource (requires `filament/filament`)
+
+#### Domain-Driven Layout
+```bash
+php artisan make:super Post --domain=Blog
+```
+Generates: `app/Http/Controllers/Blog/PostController.php`, views in `resources/views/Blog/post/`
+
+#### Livewire
+```bash
+php artisan make:super Post --livewire
 ```
 
-**Example**:
+#### Vue / React
+```bash
+php artisan make:super Post --vue
+php artisan make:super Post --react
+```
+
+#### Blueprint
+```bash
+php artisan make:super Post --blueprint=full-stack
+```
+Runs the `full-stack` blueprint: Model + Repository + Policy + FormRequests + Controller.
+
+#### Dry Run
+```bash
+php artisan make:super Post --api --domain=Blog --dry-run
+```
+Preview exactly what would be created — nothing is written to disk.
+
+#### Force Overwrite
+```bash
+php artisan make:super Post --force
+```
+
+---
+
+## `run:workflow` — Workflow Runner
+
+Execute predefined sequences of Artisan commands.
+
+### Signature
 
 ```bash
+php artisan run:workflow {workflow} [options]
+```
+
+### Options
+
+| Option | Description |
+|---|---|
+| `--name={value}` | Substitute `{name}` token in workflow commands |
+| `--dry-run` | Show the commands without running them |
+| `--stop-on-failure` | Stop the workflow if any step fails |
+| `--list` | List all available workflows |
+
+### Built-in Workflows
+
+| Workflow | Description |
+|---|---|
+| `deploy` | Clear caches, run migrations, rebuild caches, take app back up |
+| `fresh` | Wipe and re-seed the database (dev only) |
+| `optimize` | Rebuild all application caches |
+| `clear` | Clear all caches |
+| `test` | Run the test suite |
+| `test-and-deploy` | Run tests then deploy (use `--stop-on-failure`) |
+| `queue-restart` | Gracefully restart queue workers |
+| `ide-helper` | Regenerate IDE helper files |
+
+### Examples
+
+```bash
+# Standard deployment
 php artisan run:workflow deploy
+
+# Preview what deploy would do
+php artisan run:workflow deploy --dry-run
+
+# Test then deploy, stop if tests fail
+php artisan run:workflow test-and-deploy --stop-on-failure
+
+# Fresh database for local dev
+php artisan run:workflow fresh
+
+# List all workflows
+php artisan run:workflow deploy --list
+# or
+php artisan super:list
 ```
 
-Executes commands like `optimize:clear`, `migrate --force`, etc., as defined in the `deploy` workflow.
+---
 
-## Configuration
+## `make:repository` — Repository Generator
 
-The `config/super-artisan.php` file allows you to define custom **blueprints** (file generation templates) and **workflows** (command sequences).
+Generates the full repository triad:
+1. **Repository class** (`app/Repositories/{Name}Repository.php`)
+2. **Interface** (`app/Repositories/Contracts/{Name}RepositoryInterface.php`)
+3. **Service Provider binding** (`app/Providers/RepositoryServiceProvider.php`)
 
-### Blueprints
+```bash
+php artisan make:repository PostRepository --model=Post
+```
 
-Define sets of files to generate. Example:
+### Options
+
+| Option | Description |
+|---|---|
+| `--model=` | Model to use (auto-inferred from name if omitted) |
+| `--no-interface` | Skip generating the interface |
+| `--no-binding` | Skip updating RepositoryServiceProvider |
+| `--force` | Overwrite existing files |
+| `--dry-run` | Preview output |
+
+> **After generation**: Add `RepositoryServiceProvider::class` to `bootstrap/providers.php` (Laravel 11+).
+
+---
+
+## `make:service` — Service Generator
+
+```bash
+php artisan make:service PostService --model=Post
+```
+
+Generates: `app/Services/PostService.php` with typed methods and constructor injection.
+
+---
+
+## Additional Generators
+
+### `make:super-request`
+
+```bash
+php artisan make:super-request StorePostRequest --rules=title:required,body:required|max:500
+```
+
+Generates: `app/Http/Requests/StorePostRequest.php` with pre-filled validation rules.
+
+### `make:super-policy`
+
+```bash
+php artisan make:super-policy PostPolicy --model=Post
+```
+
+Generates: `app/Policies/PostPolicy.php` with all standard Gate methods (viewAny, view, create, update, delete, restore, forceDelete).
+
+### `make:super-action`
+
+```bash
+php artisan make:super-action CreatePost --model=Post
+```
+
+Generates: `app/Actions/CreatePost.php` — a single-responsibility action class.
+
+---
+
+## `super:list` — Discovery Helper
+
+```bash
+# List all workflows
+php artisan super:list
+
+# List all blueprints
+php artisan super:list --blueprints
+
+# List everything
+php artisan super:list --all
+```
+
+---
+
+## Blueprints
+
+Blueprints define reusable file-generation templates. Define your own in `config/super-artisan.php`.
+
+### Built-in Blueprints
+
+| Blueprint | Description |
+|---|---|
+| `crud` | Model + Migration + Factory + Resource Controller |
+| `api-resource` | Model + Migration + Factory + API Controller |
+| `repository-crud` | Full CRUD with Repository pattern |
+| `livewire` | Model + Migration + Livewire component |
+| `filament-resource` | Model + Migration + Filament resource |
+| `full-stack` | Model + Repository + Policy + FormRequests + Controller |
+
+### Custom Blueprint Example
 
 ```php
+// config/super-artisan.php
 'blueprints' => [
-    'crud' => [
-        'description' => 'Generates a full CRUD stack.',
+    'my-api' => [
+        'description' => 'My custom API resource.',
         'commands' => [
             'make:model {name} -m -f',
-            'make:controller {name}Controller --resource --model={name}',
+            'make:super-request Store{name}Request',
+            'make:super-request Update{name}Request',
+            'make:super {name} --api',
         ],
     ],
 ],
 ```
 
-### Workflows
+```bash
+php artisan make:super Product --blueprint=my-api
+```
 
-Define sequences of Artisan commands. Example:
+---
+
+## Custom Workflows
 
 ```php
+// config/super-artisan.php
 'workflows' => [
-    'deploy' => [
-        'description' => 'Clears caches and runs migrations.',
+    'my-deploy' => [
+        'description' => 'My custom deployment steps.',
         'commands' => [
-            'optimize:clear',
+            'down',
             'migrate --force',
-            'route:cache',
-            'view:cache',
+            'db:seed --class=ProductionSeeder',
+            'optimize',
+            'up',
         ],
     ],
 ],
 ```
+
+```bash
+php artisan run:workflow my-deploy --stop-on-failure
+```
+
+---
 
 ## Customizing Stubs
 
-Published stubs are located in `stubs/vendor/super-artisan/`. Modify these to customize generated files:
+After publishing, edit stubs in `stubs/vendor/super-artisan/`:
 
-- `view_*.stub`: Blade view templates.
-- `vue_component.stub`: Vue component template.
-- `react_component.stub`: React component template.
-- `repository.stub`: Repository class template.
-- `repository_interface.stub`: Repository interface template.
-- `repository_controller.stub`: Controller with repository injection.
-- `service.stub`: Service class template.
+| Stub | Purpose |
+|---|---|
+| `view_index.stub` | Blade index view |
+| `view_create.stub` | Blade create view |
+| `view_edit.stub` | Blade edit view |
+| `view_show.stub` | Blade show/detail view |
+| `vue_component.stub` | Vue 3 SFC component |
+| `react_component.stub` | React functional component |
+| `repository.stub` | Repository class |
+| `repository_interface.stub` | Repository interface |
+| `repository_controller.stub` | Controller with repository DI |
+| `api_controller.stub` | API resource controller |
+| `service.stub` | Service class |
+| `action.stub` | Action class |
+| `policy.stub` | Gate policy |
+| `request.stub` | FormRequest |
+| `filament_resource.stub` | Filament v3 Resource |
 
-## Repository Pattern
+### Available Tokens
 
-When using `--pattern=repository`, the package generates:
-- A repository class (`app/Repositories/{name}Repository.php`).
-- An interface (`app/Repositories/{name}RepositoryInterface.php`).
-- A controller with dependency injection (`app/Http/Controllers/*/{name}Controller.php`).
-- A binding in `app/Providers/RepositoryServiceProvider.php` to connect the interface to the repository.
+| Token | Example Output |
+|---|---|
+| `{{ name }}` | `Post` |
+| `{{ lower_name }}` | `post` |
+| `{{ plural }}` | `Posts` |
+| `{{ lower_plural }}` | `posts` |
+| `{{ snake_name }}` | `post` |
+| `{{ snake_plural }}` | `posts` |
+| `{{ kebab_name }}` | `post` |
+| `{{ ns_prefix }}` | `\Admin` (or empty) |
 
-This promotes loose coupling and maintainable code.
+---
+
+## Repository Pattern — How It Works
+
+When using `--pattern=repository` or `make:repository`, the package generates:
+
+1. **Repository class** — Implements `RepositoryInterface` from the package with `all()`, `find()`, `findOrFail()`, `create()`, `update()`, `delete()`, `paginate()`, `firstWhere()`, `count()`.
+
+2. **Repository interface** — Extends the base `RahasIstiyak\SuperArtisan\Contracts\RepositoryInterface`. Add model-specific methods here.
+
+3. **Service provider binding** — Binds the interface to the concrete class via IoC. Register it in `bootstrap/providers.php`:
+
+```php
+// bootstrap/providers.php
+return [
+    App\Providers\AppServiceProvider::class,
+    App\Providers\RepositoryServiceProvider::class, // 👈 Add this
+];
+```
+
+4. **Controller with DI** — The generated controller receives the repository interface via constructor injection, promoting testability and loose coupling.
+
+---
 
 ## Testing
-
-Run tests to ensure the package works as expected:
 
 ```bash
 vendor/bin/phpunit
 ```
 
-Tests verify file generation, path handling, repository bindings, and error cases (e.g., multiple front-end options).
+Run tests with coverage:
+
+```bash
+vendor/bin/phpunit --coverage-text
+```
+
+---
 
 ## Contributing
 
 Contributions are welcome! Please submit pull requests or issues to the [GitHub repository](https://github.com/rahasistiyakofficial/laravel-super-artisan).
 
+Please follow the existing code style and write tests for any new features.
+
+---
+
 ## License
 
-This package is licensed under the MIT License.
+This package is licensed under the **MIT License**.
 
-### **Contact**
+---
 
-For any questions or support, you can reach us at:
-**Email**: [rahasistiyak.official@gmail.com](mailto:rahasistiyak.official@gmail.com)
+## Contact
+
+**Email**: [rahasistiyak.official@gmail.com](mailto:rahasistiyak.official@gmail.com)  
+**GitHub**: [rahasistiyakofficial](https://github.com/rahasistiyakofficial)

@@ -1,6 +1,61 @@
 @extends('layouts.app')
 
+@section('title', '{{ name }} List')
+
 @section('content')
-    <h1>{{ name }} List</h1>
-    <!-- List content -->
+<div class="container mx-auto px-4 py-6">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-800">{{ name }}s</h1>
+        <a href="{{ route('{{ lower_name }}.create') }}"
+           class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
+            + New {{ name }}
+        </a>
+    </div>
+
+    @if (session('success'))
+        <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                @forelse (${{ lower_plural }} as ${{ lower_name }})
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ${{ lower_name }}->id }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ ${{ lower_name }}->name ?? '—' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ ${{ lower_name }}->created_at->diffForHumans() }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                            <a href="{{ route('{{ lower_name }}.show', ${{ lower_name }}) }}" class="text-gray-600 hover:text-gray-900">View</a>
+                            <a href="{{ route('{{ lower_name }}.edit', ${{ lower_name }}) }}" class="text-indigo-600 hover:text-indigo-900">Edit</a>
+                            <form action="{{ route('{{ lower_name }}.destroy', ${{ lower_name }}) }}" method="POST" class="inline"
+                                  onsubmit="return confirm('Delete this {{ lower_name }}?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="text-red-600 hover:text-red-900">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-10 text-center text-gray-400">No {{ lower_plural }} found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-4">
+        {{ ${{ lower_plural }}->links() }}
+    </div>
+</div>
 @endsection

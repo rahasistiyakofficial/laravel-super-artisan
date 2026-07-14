@@ -1,0 +1,10 @@
+<?php
+
+namespace App\Repositories\Contracts;
+
+use RahasIstiyak\SuperArtisan\Contracts\RepositoryInterface;
+
+interface {{ name }}Interface extends RepositoryInterface
+{
+    // Add {{ name }}-specific repository methods here
+}

@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Http\Controllers{{ ns_prefix }};
+
+use App\Http\Controllers\Controller;
+use App\Models\{{ name }};
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+class {{ name }}Controller extends Controller
+{
+    public function index(): JsonResponse
+    {
+        ${{ lower_plural }} = {{ name }}::paginate(15);
+
+        return response()->json(${{ lower_plural }});
+    }
+
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            // Add validation rules
+        ]);
+
+        ${{ lower_name }} = {{ name }}::create($validated);
+
+        return response()->json(${{ lower_name }}, 201);
+    }
+
+    public function show({{ name }} ${{ lower_name }}): JsonResponse
+    {
+        return response()->json(${{ lower_name }});
+    }
+
+    public function update(Request $request, {{ name }} ${{ lower_name }}): JsonResponse
+    {
+        $validated = $request->validate([
+            // Add validation rules
+        ]);
+
+        ${{ lower_name }}->update($validated);
+
+        return response()->json(${{ lower_name }});
+    }
+
+    public function destroy({{ name }} ${{ lower_name }}): JsonResponse
+    {
+        ${{ lower_name }}->delete();
+
+        return response()->json(null, 204);
+    }
+}

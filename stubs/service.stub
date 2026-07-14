@@ -2,7 +2,63 @@
 
 namespace App\Services;
 
-class {{ name }}
+use App\Models\{{ name }};
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
+
+class {{ name }}Service
 {
-    // Service methods
+    public function __construct(
+        protected {{ name }} $model
+    ) {}
+
+    /**
+     * Get a paginated list of {{ lower_plural }}.
+     */
+    public function list(int $perPage = 15): LengthAwarePaginator
+    {
+        return $this->model->latest()->paginate($perPage);
+    }
+
+    /**
+     * Get all {{ lower_plural }}.
+     */
+    public function all(): Collection
+    {
+        return $this->model->all();
+    }
+
+    /**
+     * Find a {{ lower_name }} by ID.
+     */
+    public function find(int|string $id): ?{{ name }}
+    {
+        return $this->model->find($id);
+    }
+
+    /**
+     * Create a new {{ lower_name }}.
+     */
+    public function create(array $data): {{ name }}
+    {
+        return $this->model->create($data);
+    }
+
+    /**
+     * Update a {{ lower_name }}.
+     */
+    public function update({{ name }} ${{ lower_name }}, array $data): {{ name }}
+    {
+        ${{ lower_name }}->update($data);
+
+        return ${{ lower_name }}->fresh();
+    }
+
+    /**
+     * Delete a {{ lower_name }}.
+     */
+    public function delete({{ name }} ${{ lower_name }}): bool
+    {
+        return (bool) ${{ lower_name }}->delete();
+    }
 }

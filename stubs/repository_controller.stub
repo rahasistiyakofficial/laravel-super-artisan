@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Http\Controllers{{ ns_prefix }};
+
+use App\Http\Controllers\Controller;
+use App\Repositories\Contracts\{{ name }}RepositoryInterface;
+use App\Models\{{ name }};
+use Illuminate\Http\Request;
+
+class {{ name }}Controller extends Controller
+{
+    public function __construct(
+        protected {{ name }}RepositoryInterface $repository
+    ) {}
+
+    public function index()
+    {
+        ${{ lower_plural }} = $this->repository->paginate(15);
+
+        return view('{{ lower_name }}.index', compact('{{ lower_plural }}'));
+    }
+
+    public function create()
+    {
+        return view('{{ lower_name }}.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            // Add validation rules
+        ]);
+
+        $this->repository->create($validated);
+
+        return redirect()->route('{{ lower_name }}.index')
+            ->with('success', '{{ name }} created successfully.');
+    }
+
+    public function show({{ name }} ${{ lower_name }})
+    {
+        return view('{{ lower_name }}.show', compact('{{ lower_name }}'));
+    }
+
+    public function edit({{ name }} ${{ lower_name }})
+    {
+        return view('{{ lower_name }}.edit', compact('{{ lower_name }}'));
+    }
+
+    public function update(Request $request, {{ name }} ${{ lower_name }})
+    {
+        $validated = $request->validate([
+            // Add validation rules
+        ]);
+
+        $this->repository->update(${{ lower_name }}->getKey(), $validated);
+
+        return redirect()->route('{{ lower_name }}.index')
+            ->with('success', '{{ name }} updated successfully.');
+    }
+
+    public function destroy({{ name }} ${{ lower_name }})
+    {
+        $this->repository->delete(${{ lower_name }}->getKey());
+
+        return redirect()->route('{{ lower_name }}.index')
+            ->with('success', '{{ name }} deleted successfully.');
+    }
+}

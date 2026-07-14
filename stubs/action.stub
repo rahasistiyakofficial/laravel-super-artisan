@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Actions;
+
+use App\Models\{{ name }};
+
+class {{ action_name }}
+{
+    /**
+     * Execute the action.
+     *
+     * @param  array  $data
+     * @return {{ name }}
+     */
+    public function execute(array $data): {{ name }}
+    {
+        return {{ name }}::create($data);
+    }
+}

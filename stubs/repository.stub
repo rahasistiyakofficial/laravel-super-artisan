@@ -2,16 +2,66 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Contracts\{{ name }}Interface;
 use App\Models\{{ model }};
+use RahasIstiyak\SuperArtisan\Contracts\RepositoryInterface;
 
-class {{ name }}
+class {{ name }} implements {{ name }}Interface
 {
-    protected $model;
+    public function __construct(
+        protected {{ model }} $model
+    ) {}
 
-    public function __construct({{ model }} $model)
+    public function all(array $columns = ['*'])
     {
-        $this->model = $model;
+        return $this->model->select($columns)->get();
     }
 
-    // Repository methods
+    public function find(int|string $id, array $columns = ['*'])
+    {
+        return $this->model->select($columns)->find($id);
+    }
+
+    public function findOrFail(int|string $id, array $columns = ['*'])
+    {
+        return $this->model->select($columns)->findOrFail($id);
+    }
+
+    public function findBy(string $field, mixed $value, array $columns = ['*'])
+    {
+        return $this->model->select($columns)->where($field, $value)->get();
+    }
+
+    public function create(array $data)
+    {
+        return $this->model->create($data);
+    }
+
+    public function update(int|string $id, array $data)
+    {
+        $record = $this->findOrFail($id);
+        $record->update($data);
+
+        return $record->fresh();
+    }
+
+    public function delete(int|string $id): bool
+    {
+        return (bool) $this->findOrFail($id)->delete();
+    }
+
+    public function paginate(int $perPage = 15, array $columns = ['*'])
+    {
+        return $this->model->select($columns)->paginate($perPage);
+    }
+
+    public function firstWhere(array $criteria, array $columns = ['*'])
+    {
+        return $this->model->select($columns)->where($criteria)->first();
+    }
+
+    public function count(): int
+    {
+        return $this->model->count();
+    }
 }
